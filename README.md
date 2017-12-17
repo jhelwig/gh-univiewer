@@ -32,7 +32,8 @@ cross-compiled OpenSSL.
 It's helpful to set several environment variables to help `cargo` and friends
 find where everything is.
 
-The following example assumes a [`crosstool-ng`]() setup that has been installed
+The following example assumes a
+[`crosstool-ng`](https://crosstool-ng.github.io/) setup that has been installed
 to `/Volumes/rpi-xtools/${CT_TARGET}`, and a cross-compiled OpenSSL that has
 been installed to `/Volumes/rpi-xtools/pi-openssl`.
 
