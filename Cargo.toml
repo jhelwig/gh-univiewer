@@ -1,0 +1,23 @@
+[package]
+name = "gh-univiewer"
+version = "0.1.0"
+authors = ["Jacob Helwig <jacob@technosorcery.net>"]
+description = "Display various GitHub project stats & metrics using a Pimoroni Unicorn HAT HD on a Raspberry PI"
+repository = "https://github.com/jhelwig/gh-univiewer"
+readme = "README.md"
+license = "BSD-3-Clause"
+keywords = ["pimoroni", "github"]
+categories = ["visualization"]
+exclude = [
+    ".vscode/*",
+]
+
+[features]
+default = []
+unicorn = ["unicorn_hat_hd"]
+
+[dependencies]
+failure = "0.1.1"
+hubcaps = "0.4.2"
+tokio-core = "0.1.11"
+unicorn_hat_hd = { version = "0.1.3", optional = true}
