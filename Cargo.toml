@@ -13,11 +13,19 @@ exclude = [
 ]
 
 [features]
-default = []
-unicorn = ["unicorn_hat_hd"]
+default = ["fake-unicorn"]
+unicorn = ["unicorn_hat_hd/hardware"]
+fake-unicorn = ["unicorn_hat_hd/fake-hardware"]
 
 [dependencies]
+config = "0.7.0"
 failure = "0.1.1"
 hubcaps = "0.4.2"
+serde = "1.0.24"
+serde_derive = "1.0.24"
 tokio-core = "0.1.11"
-unicorn_hat_hd = { version = "0.1.3", optional = true}
+unicorn_hat_hd = { version = "0.1.3", default-features = false }
+
+[dependencies.chrono]
+version = "0.4.0"
+features = ["serde"]

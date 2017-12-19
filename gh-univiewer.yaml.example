@@ -1,0 +1,7 @@
+---
+github_token: token goes here
+repositories:
+  - user: jhelwig
+    name: gh-univiewer
+    labels:
+      - metrics

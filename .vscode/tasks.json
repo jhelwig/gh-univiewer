@@ -1,0 +1,47 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "cargo build (Raspberry PI)",
+            "command": "cargo",
+            "args": [
+                "build",
+                "--target=armv7-unknown-linux-gnueabihf",
+                "--no-default-features",
+                "--features=unicorn"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "cargo build (Emulated display)",
+            "command": "cargo",
+            "args": [
+                "build",
+                "--no-default-features",
+                "--features=fake-unicorn"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "cargo run (Emulated display)",
+            "command": "cargo",
+            "args": [
+                "run",
+                "--no-default-features",
+                "--features=fake-unicorn"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ]
+        }
+    ]
+}
