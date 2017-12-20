@@ -174,6 +174,6 @@ fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<DisplayType>) -> Res
             DisplayType::ColumnCount { width: _, value: _ } => unimplemented!(),
         }
     }
-
+    uhd.display()?;
     Ok(())
 }
