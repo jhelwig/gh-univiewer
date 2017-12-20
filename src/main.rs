@@ -17,31 +17,9 @@ use tokio_core::reactor::Core;
 use unicorn_hat_hd::{UnicornHatHd, Rotate};
 
 mod settings;
+mod display;
 
-enum DisplayType {
-    ColumnRatio {
-        width: u8,
-        values: Vec<u32>,
-        colors: Vec<RGB>,
-    },
-    ColumnCount {
-        width: u8,
-        value: u32,
-    },
-}
-
-#[derive(Copy, Clone)]
-struct RGB {
-    r: u8,
-    g: u8,
-    b: u8,
-}
-
-impl RGB {
-    pub fn new(red: u8, green: u8, blue: u8) -> Self {
-        Self { r: red, g: green, b: blue }
-    }
-}
+use display::{MetricType, RGB};
 
 fn main() {
     let mut uhd = setup_unicorn_hat_hd();
@@ -115,13 +93,13 @@ fn main() {
         println!("\tMerged: {}", merged_issues);
         println!("\tAssigned: {}", assigned_open_issues);
 
-        metrics.push(DisplayType::ColumnRatio {
+        metrics.push(MetricType::ColumnRatio {
             width: 1,
             values: vec![open_issues, closed_issues - merged_issues, merged_issues],
             colors: vec![RGB::new(0, 255, 0), RGB::new(0, 0, 255), RGB::new(191, 119, 246)]
         });
 
-        metrics.push(DisplayType::ColumnRatio {
+        metrics.push(MetricType::ColumnRatio {
             width: 1,
             values: vec![open_issues - assigned_open_issues, assigned_open_issues],
             colors: vec![RGB::new(12,255,12), RGB::new(2,171,46)]
@@ -167,17 +145,17 @@ fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: Vec<u32>, col
     fill_column(&mut uhd, col, leds)
 }
 
-fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<DisplayType>) -> Result<(), Error> {
+fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<MetricType>) -> Result<(), Error> {
     let mut current_column = 0;
     for metric in metrics {
         match metric {
-            DisplayType::ColumnRatio { width: width @ _, values: values @ _, colors: colors @ _ } => {
+            MetricType::ColumnRatio { width: width @ _, values: values @ _, colors: colors @ _ } => {
                 for i in 0..width {
                     fill_column_ratio(&mut uhd, current_column, values.clone(), colors.clone())?;
                     current_column += 1;
                 }
             },
-            DisplayType::ColumnCount { width: _, value: _ } => unimplemented!(),
+            MetricType::ColumnCount { width: _, value: _ } => unimplemented!(),
         }
     }
     uhd.display()?;
