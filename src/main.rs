@@ -120,6 +120,12 @@ fn main() {
             values: vec![open_issues, closed_issues - merged_issues, merged_issues],
             colors: vec![RGB::new(0, 255, 0), RGB::new(0, 0, 255), RGB::new(191, 119, 246)]
         });
+
+        metrics.push(DisplayType::ColumnRatio {
+            width: 1,
+            values: vec![open_issues - assigned_open_issues, assigned_open_issues],
+            colors: vec![RGB::new(12,255,12), RGB::new(2,171,46)]
+        });
     }
 
     display_metrics(&mut uhd, metrics);
