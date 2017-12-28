@@ -19,6 +19,9 @@ use unicorn_hat_hd::{UnicornHatHd, Rotate};
 mod settings;
 mod display;
 
+use std::thread;
+use std::time::Duration;
+
 use display::{MetricType, RGB};
 
 fn main() {
@@ -28,7 +31,15 @@ fn main() {
         Ok(s) => s,
         Err(e) => panic!("Could not read settings: {}", e),
     };
-    let token = settings.github_token;
+
+    loop {
+        update_display(&settings, &mut uhd);
+        thread::sleep(Duration::from_secs(600));
+    }
+}
+
+fn update_display(settings: &settings::Settings, mut uhd: &mut UnicornHatHd) {
+    let token = settings.github_token.clone();
 
     let mut core = Core::new().expect("reactor fail");
     let github = Github::new(
@@ -39,7 +50,7 @@ fn main() {
 
     let mut metrics = vec![];
 
-    for repo in settings.repositories {
+    for repo in &settings.repositories {
         let hubcap_repo = github.repo(repo.user.clone(), repo.name.clone());
         let mut open_issues = 0;
         let mut closed_issues = 0;
