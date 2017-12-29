@@ -141,15 +141,45 @@ fn fill_column(uhd: &mut UnicornHatHd, col: usize, colors: Vec<RGB8>) -> Result<
     Ok(())
 }
 
+fn vector_of_leds(vals: Vec<u32>) -> Vec<u64> {
+    let total: u32 = vals.iter().sum();
+
+    let mut return_vector_float: Vec<f64> = Vec::new();
+    let mut return_vector_round: Vec<u64> = Vec::new();
+
+    for &val in &vals {
+        let ret_val = 16f64 * (f64::from(val) / f64::from(total));
+        return_vector_float.push(ret_val.clone());
+        return_vector_round.push(ret_val.round() as u64);
+    }
+
+    let round_sum = return_vector_round.iter().sum::<u64>();
+    if round_sum > 16 {
+        let min = return_vector_float.iter().fold(100.0f64, |acc, &x| if x > 1.5 { acc.min(x) } else { acc });
+        let mut final_vector: Vec<u64> = Vec::new();
+        for val in &return_vector_float {
+            if val == &min {
+                final_vector.push((val - 1.0).round() as u64);
+            } else {
+                final_vector.push(val.round() as u64);
+            }
+        }
+
+        final_vector
+    } else {
+        return_vector_round
+    }
+}
+
 fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: Vec<u32>, colors: Vec<RGB8>) -> Result<(), Error> {
     if vals.len() != colors.len() {
         return Err(format_err!("Number of values ({}) does not match number of colors ({}).", vals.len(), colors.len()));
     }
 
     let mut leds = vec![];
-    let total: u32 = vals.iter().sum();
-    for (i, &v) in vals.iter().enumerate() {
-        let num_leds = ((16f64 * (f64::from(v) / f64::from(total))).round()) as u64;
+
+    let num_leds_vector = vector_of_leds(vals.clone());
+    for (i, &num_leds) in num_leds_vector.iter().enumerate() {
         for _ in 0..num_leds {
             leds.push(colors[i].clone());
         }
@@ -173,4 +203,26 @@ fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<MetricType>) -> Resu
     }
     uhd.display()?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn test_num_leds() {
+    let test_vector = vec![
+        vec![0, 1, 3],
+        vec![62, 6, 4],
+        vec![14, 2, 3],
+        vec![0, 5],
+        vec![47],
+      ];
+    for vals in &test_vector {
+      println!("Vector is: '{:?}'", &vals);
+      let new_vector = vector_of_leds(vals.clone());
+      let new_vector_sum = new_vector.iter().sum::<u64>();
+      assert_eq!(new_vector_sum, 16, "testing that {} is equal to 16", &new_vector_sum);
+    }
+  }
 }
