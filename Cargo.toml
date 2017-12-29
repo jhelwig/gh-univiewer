@@ -30,3 +30,6 @@ unicorn_hat_hd = { version = "0.2.1", default-features = false }
 [dependencies.chrono]
 version = "0.4.0"
 features = ["serde"]
+
+[dev_dependencies]
+spectral = "0.6.0"
