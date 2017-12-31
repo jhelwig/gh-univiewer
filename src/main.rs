@@ -3,6 +3,7 @@ extern crate config;
 #[macro_use]
 extern crate failure;
 extern crate hubcaps;
+extern crate rgb;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -13,6 +14,7 @@ use failure::Error;
 use hubcaps::{Credentials, Github};
 use hubcaps::issues;
 use hubcaps::issues::IssueListOptionsBuilder;
+use rgb::RGB8;
 use tokio_core::reactor::Core;
 use unicorn_hat_hd::{UnicornHatHd, Rotate};
 
@@ -22,7 +24,7 @@ mod display;
 use std::thread;
 use std::time::Duration;
 
-use display::{MetricType, RGB};
+use display::MetricType;
 
 fn main() {
     let mut uhd = setup_unicorn_hat_hd();
@@ -107,13 +109,13 @@ fn update_display(settings: &settings::Settings, mut uhd: &mut UnicornHatHd) {
         metrics.push(MetricType::ColumnRatio {
             width: 1,
             values: vec![open_issues, closed_issues - merged_issues, merged_issues],
-            colors: vec![RGB::new(0, 255, 0), RGB::new(0, 0, 255), RGB::new(191, 119, 246)]
+            colors: vec![RGB8::new(0, 255, 0), RGB8::new(0, 0, 255), RGB8::new(191, 119, 246)]
         });
 
         metrics.push(MetricType::ColumnRatio {
             width: 1,
             values: vec![open_issues - assigned_open_issues, assigned_open_issues],
-            colors: vec![RGB::new(12,255,12), RGB::new(2,171,46)]
+            colors: vec![RGB8::new(12,255,12), RGB8::new(2,171,46)]
         });
     }
 
@@ -127,19 +129,19 @@ fn setup_unicorn_hat_hd() -> UnicornHatHd {
     uhd
 }
 
-fn fill_column(uhd: &mut UnicornHatHd, col: usize, colors: Vec<RGB>) -> Result<(), Error> {
+fn fill_column(uhd: &mut UnicornHatHd, col: usize, colors: Vec<RGB8>) -> Result<(), Error> {
     if colors.len() > 16 {
         return Err(format_err!("Number of values ({}) cannot exceed 16.", colors.len()));
     }
 
     for (i, &c) in colors.iter().enumerate() {
-        uhd.set_pixel(col, 15 - i, c.r, c.g, c.b);
+        uhd.set_pixel(col, 15 - i, c);
     }
 
     Ok(())
 }
 
-fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: Vec<u32>, colors: Vec<RGB>) -> Result<(), Error> {
+fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: Vec<u32>, colors: Vec<RGB8>) -> Result<(), Error> {
     if vals.len() != colors.len() {
         return Err(format_err!("Number of values ({}) does not match number of colors ({}).", vals.len(), colors.len()));
     }
