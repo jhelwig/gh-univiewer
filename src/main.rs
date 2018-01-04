@@ -148,14 +148,24 @@ fn vector_of_leds(vals: Vec<u32>) -> Vec<u64> {
     let mut return_vector_round: Vec<u64> = Vec::new();
 
     for &val in &vals {
-        let ret_val = 16f64 * (f64::from(val) / f64::from(total));
+        let ret_val = if total == 0 {
+            0f64
+        } else {
+            16f64 * (f64::from(val) / f64::from(total))
+        };
         return_vector_float.push(ret_val.clone());
         return_vector_round.push(ret_val.round() as u64);
     }
 
     let round_sum = return_vector_round.iter().sum::<u64>();
     if round_sum > 16 {
-        let min = return_vector_float.iter().fold(100.0f64, |acc, &x| if x > 1.5 { acc.min(x) } else { acc });
+        let min = return_vector_float.iter().fold(100.0f64, |acc, &x| {
+            if x > 1.5 {
+                acc.min(x)
+            } else {
+                acc
+            }
+        });
         let mut final_vector: Vec<u64> = Vec::new();
         for val in &return_vector_float {
             if val == &min {
@@ -164,7 +174,6 @@ fn vector_of_leds(vals: Vec<u32>) -> Vec<u64> {
                 final_vector.push(val.round() as u64);
             }
         }
-
         final_vector
     } else {
         return_vector_round
@@ -207,22 +216,92 @@ fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<MetricType>) -> Resu
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn test_num_leds() {
-    let test_vector = vec![
-        vec![0, 1, 3],
-        vec![62, 6, 4],
-        vec![14, 2, 3],
-        vec![0, 5],
-        vec![47],
-      ];
-    for vals in &test_vector {
-      println!("Vector is: '{:?}'", &vals);
-      let new_vector = vector_of_leds(vals.clone());
-      let new_vector_sum = new_vector.iter().sum::<u64>();
-      assert_eq!(new_vector_sum, 16, "testing that {} is equal to 16", &new_vector_sum);
+    #[test]
+    fn test_vector_of_leds() {
+        let original_vals = vec![0, 1, 3];
+        let expected_counts = vec![0, 4, 12];
+        let result = vector_of_leds(original_vals.clone());
+        assert_eq!(
+            result,
+            expected_counts,
+            "vector_of_leds({:?}) -> {:?} (Expected: {:?})",
+            original_vals,
+            result,
+            expected_counts
+        );
+
+        let original_vals = vec![62, 6, 4];
+        let expected_counts = vec![14, 1, 1];
+        let result = vector_of_leds(original_vals.clone());
+        assert_eq!(
+            result,
+            expected_counts,
+            "vector_of_leds({:?}) -> {:?} (Expected: {:?})",
+            original_vals,
+            result,
+            expected_counts
+        );
+
+        let original_vals = vec![14, 2, 3];
+        let expected_counts = vec![12, 1, 3];
+        let result = vector_of_leds(original_vals.clone());
+        assert_eq!(
+            result,
+            expected_counts,
+            "vector_of_leds({:?}) -> {:?} (Expected: {:?})",
+            original_vals,
+            result,
+            expected_counts
+        );
+
+        let original_vals = vec![0, 5];
+        let expected_counts = vec![0, 16];
+        let result = vector_of_leds(original_vals.clone());
+        assert_eq!(
+            result,
+            expected_counts,
+            "vector_of_leds({:?}) -> {:?} (Expected: {:?})",
+            original_vals,
+            result,
+            expected_counts
+        );
+
+        let original_vals = vec![47];
+        let expected_counts = vec![16];
+        let result = vector_of_leds(original_vals.clone());
+        assert_eq!(
+            result,
+            expected_counts,
+            "vector_of_leds({:?}) -> {:?} (Expected: {:?})",
+            original_vals,
+            result,
+            expected_counts
+        );
+
+        let original_vals = vec![0];
+        let expected_counts = vec![0];
+        let result = vector_of_leds(original_vals.clone());
+        assert_eq!(
+            result,
+            expected_counts,
+            "vector_of_leds({:?}) -> {:?} (Expected: {:?})",
+            original_vals,
+            result,
+            expected_counts
+        );
+
+        let original_vals = vec![0, 0];
+        let expected_counts = vec![0, 0];
+        let result = vector_of_leds(original_vals.clone());
+        assert_eq!(
+            result,
+            expected_counts,
+            "vector_of_leds({:?}) -> {:?} (Expected: {:?})",
+            original_vals,
+            result,
+            expected_counts
+        );
     }
-  }
 }
