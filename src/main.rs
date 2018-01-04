@@ -149,7 +149,11 @@ fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: Vec<u32>, col
     let mut leds = vec![];
     let total: u32 = vals.iter().sum();
     for (i, &v) in vals.iter().enumerate() {
-        let num_leds = ((16f64 * (f64::from(v) / f64::from(total))).round()) as u64;
+        let num_leds = if total > 16 {
+            (f64::from(v) * 17f64 / (f64::from(total) + 1f64)) as u64
+        } else {
+            (f64::from(v) * 16f64 / f64::from(total)) as u64
+        };
         for _ in 0..num_leds {
             leds.push(colors[i].clone());
         }
