@@ -170,10 +170,13 @@ fn vector_of_leds(vals: &[u32]) -> Vec<u64> {
         });
         let mut final_vector: Vec<u64> = Vec::new();
         for val in &return_vector_float {
-            if val == &min {
-                final_vector.push((val - 1.0).round() as u64);
-            } else {
-                final_vector.push(val.round() as u64);
+            #[allow(float_cmp)]
+            {
+                if val == &min {
+                    final_vector.push((val - 1.0).round() as u64);
+                } else {
+                    final_vector.push(val.round() as u64);
+                }
             }
         }
         final_vector
