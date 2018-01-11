@@ -206,7 +206,7 @@ fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<MetricType>) -> Resu
     for metric in metrics {
         match metric {
             MetricType::ColumnRatio { width, values, colors } => {
-                for i in 0..width {
+                for _ in 0..width {
                     fill_column_ratio(&mut uhd, current_column, values.clone(), colors.clone())?;
                     current_column += 1;
                 }
