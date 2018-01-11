@@ -209,7 +209,7 @@ fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<MetricType>) -> Resu
                     current_column += 1;
                 }
             },
-            MetricType::ColumnCount { width: _, value: _ } => unimplemented!(),
+            MetricType::ColumnCount { .. } => unimplemented!(),
         }
     }
     uhd.display()?;
