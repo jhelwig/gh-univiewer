@@ -33,10 +33,10 @@ impl RepositorySettings {
     pub fn closed_since_date(&self) -> Option<DateTime<Utc>> {
         if let Some(ref s) = self.since {
             match *s {
-                Since { quantity: q @ _, unit: SinceSpan::Day } => {
+                Since { quantity: q, unit: SinceSpan::Day } => {
                     return Some(Utc::now().checked_sub_signed(Duration::days(q as i64)).unwrap())
                 },
-                Since { quantity: q @ _, unit: SinceSpan::Week } => {
+                Since { quantity: q, unit: SinceSpan::Week } => {
                     return Some(Utc::now().checked_sub_signed(Duration::weeks(q as i64)).unwrap())
                 },
             }
