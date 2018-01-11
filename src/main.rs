@@ -75,7 +75,7 @@ fn update_display(settings: &settings::Settings, mut uhd: &mut UnicornHatHd) {
         })).unwrap() {
             open_issues += 1;
 
-            if let Some(_) = issue.assignee {
+            if issue.assignee.is_some() {
                 if issue.closed_at == None {
                     assigned_open_issues += 1;
                 }
@@ -99,7 +99,7 @@ fn update_display(settings: &settings::Settings, mut uhd: &mut UnicornHatHd) {
             closed_issues += 1;
 
             let pr = core.run(hubcap_repo.pulls().get(issue.number).get()).unwrap();
-            if let Some(_) = pr.merged_at {
+            if pr.merged_at.is_some() {
                 merged_issues += 1;
             }
         }
