@@ -75,10 +75,8 @@ fn update_display(settings: &settings::Settings, mut uhd: &mut UnicornHatHd) {
         })).unwrap() {
             open_issues += 1;
 
-            if issue.assignee.is_some() {
-                if issue.closed_at == None {
-                    assigned_open_issues += 1;
-                }
+            if issue.assignee.is_some() && issue.closed_at == None {
+                assigned_open_issues += 1;
             };
         }
 
