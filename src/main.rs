@@ -131,7 +131,7 @@ fn setup_unicorn_hat_hd() -> UnicornHatHd {
     uhd
 }
 
-fn fill_column(uhd: &mut UnicornHatHd, col: usize, colors: Vec<RGB8>) -> Result<(), Error> {
+fn fill_column(uhd: &mut UnicornHatHd, col: usize, colors: &[RGB8]) -> Result<(), Error> {
     if colors.len() > 16 {
         return Err(format_err!("Number of values ({}) cannot exceed 16.", colors.len()));
     }
@@ -143,13 +143,13 @@ fn fill_column(uhd: &mut UnicornHatHd, col: usize, colors: Vec<RGB8>) -> Result<
     Ok(())
 }
 
-fn vector_of_leds(vals: Vec<u32>) -> Vec<u64> {
+fn vector_of_leds(vals: &[u32]) -> Vec<u64> {
     let total: u32 = vals.iter().sum();
 
     let mut return_vector_float: Vec<f64> = Vec::new();
     let mut return_vector_round: Vec<u64> = Vec::new();
 
-    for &val in &vals {
+    for &val in vals {
         let ret_val = if total == 0 {
             0f64
         } else {
@@ -182,7 +182,7 @@ fn vector_of_leds(vals: Vec<u32>) -> Vec<u64> {
     }
 }
 
-fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: Vec<u32>, colors: Vec<RGB8>) -> Result<(), Error> {
+fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: &[u32], colors: &[RGB8]) -> Result<(), Error> {
     if vals.len() != colors.len() {
         return Err(format_err!("Number of values ({}) does not match number of colors ({}).", vals.len(), colors.len()));
     }
@@ -196,7 +196,7 @@ fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: Vec<u32>, col
         }
     }
 
-    fill_column(&mut uhd, col, leds)
+    fill_column(&mut uhd, col, &leds)
 }
 
 fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<MetricType>) -> Result<(), Error> {
@@ -205,7 +205,7 @@ fn display_metrics(mut uhd: &mut UnicornHatHd, metrics: Vec<MetricType>) -> Resu
         match metric {
             MetricType::ColumnRatio { width, values, colors } => {
                 for _ in 0..width {
-                    fill_column_ratio(&mut uhd, current_column, values.clone(), colors.clone())?;
+                    fill_column_ratio(&mut uhd, current_column, &values, &colors)?;
                     current_column += 1;
                 }
             },
@@ -224,7 +224,7 @@ mod tests {
     fn test_vector_of_leds() {
         let original_vals = vec![0, 1, 3];
         let expected_counts = vec![0, 4, 12];
-        let result = vector_of_leds(original_vals.clone());
+        let result = vector_of_leds(&original_vals);
         assert_eq!(
             result,
             expected_counts,
@@ -236,7 +236,7 @@ mod tests {
 
         let original_vals = vec![62, 6, 4];
         let expected_counts = vec![14, 1, 1];
-        let result = vector_of_leds(original_vals.clone());
+        let result = vector_of_leds(&original_vals);
         assert_eq!(
             result,
             expected_counts,
@@ -248,7 +248,7 @@ mod tests {
 
         let original_vals = vec![14, 2, 3];
         let expected_counts = vec![12, 1, 3];
-        let result = vector_of_leds(original_vals.clone());
+        let result = vector_of_leds(&original_vals);
         assert_eq!(
             result,
             expected_counts,
@@ -260,7 +260,7 @@ mod tests {
 
         let original_vals = vec![0, 5];
         let expected_counts = vec![0, 16];
-        let result = vector_of_leds(original_vals.clone());
+        let result = vector_of_leds(&original_vals);
         assert_eq!(
             result,
             expected_counts,
@@ -272,7 +272,7 @@ mod tests {
 
         let original_vals = vec![47];
         let expected_counts = vec![16];
-        let result = vector_of_leds(original_vals.clone());
+        let result = vector_of_leds(&original_vals);
         assert_eq!(
             result,
             expected_counts,
@@ -284,7 +284,7 @@ mod tests {
 
         let original_vals = vec![0];
         let expected_counts = vec![0];
-        let result = vector_of_leds(original_vals.clone());
+        let result = vector_of_leds(&original_vals);
         assert_eq!(
             result,
             expected_counts,
@@ -296,7 +296,7 @@ mod tests {
 
         let original_vals = vec![0, 0];
         let expected_counts = vec![0, 0];
-        let result = vector_of_leds(original_vals.clone());
+        let result = vector_of_leds(&original_vals);
         assert_eq!(
             result,
             expected_counts,
