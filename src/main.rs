@@ -10,6 +10,10 @@ extern crate serde_derive;
 extern crate tokio_core;
 extern crate unicorn_hat_hd;
 
+#[cfg(test)]
+#[macro_use]
+extern crate spectral;
+
 use failure::Error;
 use hubcaps::{Credentials, Github};
 use hubcaps::issues;
@@ -86,8 +90,8 @@ fn update_display(settings: &settings::Settings, mut uhd: &mut UnicornHatHd) {
             if let Some(ref l) = repo.labels {
                 ilo.labels(l.clone());
             };
-            if let Some(ref s) = repo.since {
-                ilo.since(s.clone());
+            if let Some(s) = repo.closed_since_date() {
+                ilo.since(format!("{}", s.format("%Y-%m-%d")));
             }
 
             ilo.build()
