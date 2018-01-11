@@ -155,7 +155,7 @@ fn vector_of_leds(vals: &[u32]) -> Vec<u64> {
         } else {
             16f64 * (f64::from(val) / f64::from(total))
         };
-        return_vector_float.push(ret_val.clone());
+        return_vector_float.push(ret_val);
         return_vector_round.push(ret_val.round() as u64);
     }
 
@@ -189,10 +189,10 @@ fn fill_column_ratio(mut uhd: &mut UnicornHatHd, col: usize, vals: &[u32], color
 
     let mut leds = vec![];
 
-    let num_leds_vector = vector_of_leds(vals.clone());
+    let num_leds_vector = vector_of_leds(vals);
     for (i, &num_leds) in num_leds_vector.iter().enumerate() {
         for _ in 0..num_leds {
-            leds.push(colors[i].clone());
+            leds.push(colors[i]);
         }
     }
 
