@@ -1,3 +1,6 @@
+#![allow(unknown_lints)]
+#![forbid(clone_on_copy, collapsible_if, if_let_redundant_pattern_matching, needless_pass_by_value, redundant_pattern, unused_variables, useless_attribute)]
+
 extern crate chrono;
 extern crate config;
 #[macro_use]
