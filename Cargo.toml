@@ -20,7 +20,7 @@ fake-unicorn = ["unicorn_hat_hd/fake-hardware"]
 [dependencies]
 config = "0.9.2"
 failure = "0.1.5"
-hubcaps = "0.4.10"
+hubcaps = "0.5.0"
 rgb = "0.8.13"
 serde = "1.0.88"
 serde_derive = "1.0.89"
