@@ -18,7 +18,7 @@ unicorn = ["unicorn_hat_hd/hardware"]
 fake-unicorn = ["unicorn_hat_hd/fake-hardware"]
 
 [dependencies]
-config = "0.9.3"
+config = "0.10.1"
 failure = "0.1.6"
 hubcaps = "0.4.10"
 rgb = "0.8.14"
